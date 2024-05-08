@@ -1,7 +1,7 @@
 // /
 
 import axios from "axios";
-import { Moment } from "moment";
+import moment, { Moment } from "moment";
 
 export interface T_userCredentials {
   username: string;
@@ -116,6 +116,39 @@ export const getMachinerys = async (
     .catch(async (e) => {
       console.error(await e, " >>>> on getMachinerys fn ");
       cb([]);
+    });
+};
+
+export const getWorks = (
+  data: {
+    deviceId: string;
+    start: Moment;
+    end: Moment;
+  },
+  cb: (data: { works: T_work[] } | null) => void
+) => {
+  const token = localStorage.getItem("token"); // Preia tokenul utilizatorului
+
+  axios({
+    method: "get",
+    url: `${process.env.server}/api2/machinery/works`,
+    params: { deviceId: data.deviceId, start: data.start, end: data.end },
+    headers: {
+      Authorization: `JWT ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        cb(response.data);
+      } else {
+        cb(null);
+      }
+    })
+    .catch(async (e) => {
+      console.error(await e, " >>>> on getWorks");
+
+      cb(null);
     });
 };
 

@@ -48,24 +48,40 @@ export const MapPolygons = (props: {
       setPolygons(null);
     }
     if (props.polygons?.length) {
-      props.polygons.forEach((polygon) => {
-        let polygonLocal = new google.maps.Polygon({
-          paths: [
-            polygon[0].map((position: [number, number]) => {
-              return { lng: position[0], lat: position[1] };
-            }),
-          ],
-          map,
-          fillColor: randomColor(),
-          strokeWeight: 0,
-          fillOpacity: 0.95,
-          zIndex: 2050,
-        });
+      props.polygons.forEach((polygonPath) => {
+        let pathsCollection: [number, number][] = [];
 
-        console.log(polygonLocal);
-        polygonsLocal.push(polygonLocal);
+        if (polygonPath[0] && Array.isArray(polygonPath[0][0][0])) {
+          // one more path level
+          polygonPath.forEach((polygonPath2: any) => {
+            polygonPath2.forEach((path: any) => {
+              pathsCollection.push(path);
+            });
+          });
+        } else {
+          pathsCollection.push(polygonPath[0]);
+        }
+
+        pathsCollection.forEach((paths: any) => {
+          let polygonLocal = new google.maps.Polygon({
+            paths: [
+              paths.map((position: [number, number]) => {
+                return { lng: position[0], lat: position[1] };
+              }),
+            ],
+            map,
+            fillColor: randomColor(),
+            strokeWeight: 0,
+            strokeColor: "black",
+            fillOpacity: 0.7,
+            zIndex: 2050,
+          });
+
+          polygonsLocal.push(polygonLocal);
+        });
       });
     }
+
     if (polygonsLocal.length) {
       setPolygons(polygonsLocal);
     }

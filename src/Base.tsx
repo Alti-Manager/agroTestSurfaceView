@@ -7,6 +7,7 @@ import {
   authUser,
   getMachineryPath,
   getMachinerys,
+  getWorks,
 } from "./Utilsj";
 import { Inputs, T_input } from "./Components/Inputs";
 import { BaseMap } from "./Components/Map";
@@ -68,6 +69,31 @@ export const Base = (): ReactElement | null => {
     },
   ];
 
+  const getWorksLocal = (polylines: T_mapData["polylines"]) => {
+    //get works for this machinary
+    getWorks(
+      {
+        deviceId: machinaries.filter(
+          (machinary) => machinary._id === form.machineryId
+        )[0].deviceId,
+        start: form.start,
+        end: form.end,
+      },
+      (data) => {
+        let worksPolygons = data.works?.map((work) => {
+          let polygon = work.coordinates;
+          return polygon;
+        });
+
+        setMapData({
+          markers: [],
+          polylines,
+          polygons: worksPolygons,
+        });
+      }
+    );
+  };
+
   const getPath = () => {
     if (form.machineryId) {
       setMapData(null);
@@ -83,7 +109,6 @@ export const Base = (): ReactElement | null => {
           // save this path
 
           if (path && path.path.length) {
-            console.log(path.works);
             let worksPolygons = path.works?.map((work) => {
               let polygon = work.coordinates;
               return polygon;
@@ -117,6 +142,9 @@ export const Base = (): ReactElement | null => {
               polygons: worksPolygons,
               polylines,
             });
+
+            // get works now
+            getWorksLocal(polylines);
           } else {
             window.alert("Nu avem date");
           }
