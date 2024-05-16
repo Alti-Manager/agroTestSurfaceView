@@ -31,7 +31,31 @@ export const BaseMapComp = (props: T_mapData): ReactElement | null => {
     >
       <MapPolylines polylines={props.polylines} key={"PolylinesComp"} />
       <MapPolygons polygons={props.polygons} key="PolygonsComp" />
+      <MapMarkers markers={props.markers} key="MarkersCom" />
     </Map>
+  );
+};
+
+export const MapMarkers = (props: {
+  markers: T_mapData["markers"];
+}): ReactElement | null => {
+  const map = useMap();
+  const [markers, setMarkers] = useState<google.maps.MarkerLibrary[]>();
+
+  return (
+    <>
+      {props.markers?.map((marker) => {
+        return (
+          <AdvancedMarker
+            key={`${marker[0]}_${marker[1]}`}
+            position={{
+              lng: marker[0],
+              lat: marker[1],
+            }}
+          />
+        );
+      })}
+    </>
   );
 };
 

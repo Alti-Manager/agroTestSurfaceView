@@ -24,8 +24,8 @@ export const Base = (): ReactElement | null => {
   const [mapData, setMapData] = useState<T_mapData>();
   const [form, setForm] = useState({
     machineryId: "",
-    start: moment("2024-04-28").startOf("day"),
-    end: moment("2024-04-28").endOf("day"),
+    start: moment("2024-05-11").startOf("day"),
+    end: moment("2024-05-11").endOf("day"),
   });
 
   useEffect(() => {
@@ -85,9 +85,18 @@ export const Base = (): ReactElement | null => {
           return polygon;
         });
 
+        let markers: T_mapData["markers"][] = data.points?.map((point) => {
+          return point;
+        });
+
+        // add extra Polylines
+        let extraPoly: T_mapData["polylines"] = data.segments
+          ? data.segments
+          : [];
+
         setMapData({
-          markers: [],
-          polylines,
+          markers,
+          polylines: [...polylines, ...extraPoly],
           polygons: worksPolygons,
         });
       }

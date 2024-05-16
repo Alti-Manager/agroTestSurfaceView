@@ -125,7 +125,13 @@ export const getWorks = (
     start: Moment;
     end: Moment;
   },
-  cb: (data: { works: T_work[] } | null) => void
+  cb: (
+    data: {
+      works: T_work[];
+      points: T_geoJSON[];
+      segments: T_geoJSON[][];
+    } | null
+  ) => void
 ) => {
   const token = localStorage.getItem("token"); // Preia tokenul utilizatorului
 
