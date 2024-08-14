@@ -4,6 +4,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import {
   T_geoJSON,
   T_machinery,
+  T_work,
   authUser,
   getMachineryPath,
   getMachinerys,
@@ -22,10 +23,11 @@ export interface T_mapData {
 export const Base = (): ReactElement | null => {
   const [machinaries, setMachineries] = useState<T_machinery[]>();
   const [mapData, setMapData] = useState<T_mapData>();
+  const [localWorks, setLocalWorks] = useState<T_work[]>();
   const [form, setForm] = useState({
     machineryId: "",
-    start: moment("2024-05-11").startOf("day"),
-    end: moment("2024-05-11").endOf("day"),
+    start: moment("2024-07-29").startOf("day"),
+    end: moment("2024-07-29").endOf("day"),
   });
 
   useEffect(() => {
@@ -80,8 +82,26 @@ export const Base = (): ReactElement | null => {
         end: form.end,
       },
       (data) => {
+        // set works
+        setLocalWorks(data.works);
+
         let worksPolygons = data.works?.map((work) => {
-          let polygon = work.coordinates;
+          let polygon = work.coordinates.map((path) => {
+            return path.map((position, index) => {
+              let toReturn: T_geoJSON = [position[0], position[1]];
+              if (index === 0) {
+                toReturn = [
+                  position[0],
+                  position[1],
+                  position[2],
+                  position[3],
+                  work._id,
+                ];
+              }
+
+              return toReturn;
+            });
+          });
           return polygon;
         });
 
@@ -173,6 +193,26 @@ export const Base = (): ReactElement | null => {
     },
   ];
 
+  const handleClick = (
+    type: "marker" | "polyline" | "polygon",
+    target: string
+  ) => {
+    switch (type) {
+      case "polygon":
+        const selectedWork = localWorks.filter(
+          (local) => local._id === target
+        )[0];
+        alert(` Interval ${selectedWork.start} - ${selectedWork.end} 
+          suprafata: ${selectedWork.workingArea.toFixed(
+            2
+          )} ha, consum: ${selectedWork.totalConsumption.toFixed(2)} l`);
+        break;
+
+      default:
+        break;
+    }
+  };
+
   const handleChange = (target: T_input, value: any) => {
     let f = { ...form };
     Object.assign(f, { [target.value]: value });
@@ -218,9 +258,12 @@ export const Base = (): ReactElement | null => {
           }}
         >
           <BaseMap
-            markers={mapData?.markers}
-            polygons={mapData?.polygons}
-            polylines={mapData?.polylines}
+            handleClick={handleClick}
+            data={{
+              markers: mapData?.markers,
+              polygons: mapData?.polygons,
+              polylines: mapData?.polylines,
+            }}
             key={"mainMapComp"}
           />
         </Grid>

@@ -7,20 +7,32 @@ import {
   useMap,
 } from "@vis.gl/react-google-maps";
 import React from "react";
-import { randomColor } from "../Utilsj";
+import { randomColor, T_geoJSON } from "../Utilsj";
 
-export const BaseMap = (props: T_mapData): ReactElement | null => {
+export const BaseMap = (props: {
+  data: T_mapData;
+  handleClick: (
+    type: "marker" | "polyline" | "polygon",
+    target: string
+  ) => void;
+}): ReactElement | null => {
   return (
     <APIProvider
       apiKey="AIzaSyCbmoTCniO_4-qigA7MBbEYI2D2o1OG400"
       libraries={["core", "maps", "marker"]}
     >
-      <BaseMapComp {...props} />
+      <BaseMapComp data={{ ...props.data }} handleClick={props.handleClick} />
     </APIProvider>
   );
 };
 
-export const BaseMapComp = (props: T_mapData): ReactElement | null => {
+export const BaseMapComp = (props: {
+  data: T_mapData;
+  handleClick: (
+    type: "marker" | "polyline" | "polygon",
+    target: string
+  ) => void;
+}): ReactElement | null => {
   const map = useMap();
   return (
     <Map
@@ -29,15 +41,31 @@ export const BaseMapComp = (props: T_mapData): ReactElement | null => {
       defaultZoom={10}
       mapTypeId="hybrid"
     >
-      <MapPolylines polylines={props.polylines} key={"PolylinesComp"} />
-      <MapPolygons polygons={props.polygons} key="PolygonsComp" />
-      <MapMarkers markers={props.markers} key="MarkersCom" />
+      <MapPolylines
+        polylines={props.data.polylines}
+        handleClick={props.handleClick}
+        key={"PolylinesComp"}
+      />
+      <MapPolygons
+        polygons={props.data.polygons}
+        handleClick={props.handleClick}
+        key="PolygonsComp"
+      />
+      <MapMarkers
+        markers={props.data.markers}
+        handleClick={props.handleClick}
+        key="MarkersCom"
+      />
     </Map>
   );
 };
 
 export const MapMarkers = (props: {
   markers: T_mapData["markers"];
+  handleClick: (
+    type: "marker" | "polyline" | "polygon",
+    target: string
+  ) => void;
 }): ReactElement | null => {
   const map = useMap();
   const [markers, setMarkers] = useState<google.maps.MarkerLibrary[]>();
@@ -59,50 +87,74 @@ export const MapMarkers = (props: {
   );
 };
 
+interface CustomPolygon extends google.maps.Polygon {
+  id?: string;
+}
+
 export const MapPolygons = (props: {
   polygons: T_mapData["polygons"];
+  handleClick: (
+    type: "marker" | "polyline" | "polygon",
+    target: string
+  ) => void;
 }): ReactElement | null => {
   const map = useMap();
-  const [polygons, setPolygons] = useState<google.maps.Polygon[]>();
+  const [polygons, setPolygons] = useState<CustomPolygon[]>();
+  const [selectedPolygonId, setSelectedPolygonId] = useState<string | null>(
+    null
+  );
+
+  const selectPolygon = (id: string) => {
+    props.handleClick("polygon", id);
+    setSelectedPolygonId(id);
+  };
 
   useEffect(() => {
-    var polygonsLocal: google.maps.Polygon[] = [];
+    // monitor selected polygon change
+    polygons?.forEach((localPolygon) => {
+      if (localPolygon.id === selectedPolygonId) {
+        localPolygon.setOptions({
+          strokeWeight: 5,
+        });
+      } else {
+        localPolygon.setOptions({
+          strokeWeight: 0,
+        });
+      }
+    });
+  }, [selectedPolygonId]);
+
+  useEffect(() => {
+    var polygonsLocal: CustomPolygon[] = [];
     if (polygons && polygons.length) {
       polygons.forEach((polygon) => polygon.setMap(null));
       setPolygons(null);
     }
     if (props.polygons?.length) {
-      props.polygons.forEach((polygonPath) => {
-        let pathsCollection: [number, number][] = [];
-
-        if (polygonPath[0] && Array.isArray(polygonPath[0][0][0])) {
-          // one more path level
-          polygonPath.forEach((polygonPath2: any) => {
-            polygonPath2.forEach((path: any) => {
-              pathsCollection.push(path);
+      props.polygons.forEach((polygonPath: T_geoJSON[][]) => {
+        const polygonLocal: CustomPolygon = new google.maps.Polygon({
+          paths: polygonPath.map((localPolygon) => {
+            return localPolygon.map((position) => {
+              return { lng: position[0], lat: position[1] };
             });
-          });
-        } else {
-          pathsCollection.push(polygonPath[0]);
-        }
-
-        pathsCollection.forEach((paths: any) => {
-          let polygonLocal = new google.maps.Polygon({
-            paths: [
-              paths.map((position: [number, number]) => {
-                return { lng: position[0], lat: position[1] };
-              }),
-            ],
-            map,
-            fillColor: randomColor(),
-            strokeWeight: 0,
-            strokeColor: "black",
-            fillOpacity: 0.7,
-            zIndex: 2050,
-          });
-
-          polygonsLocal.push(polygonLocal);
+          }),
+          map,
+          fillColor: randomColor(),
+          strokeWeight: 0,
+          strokeColor: "white",
+          fillOpacity: 0.7,
+          zIndex: 2050,
         });
+
+        polygonLocal.id = polygonPath[0][0][4];
+
+        polygonLocal.addListener("click", () => {
+          let polygonId = polygonPath[0][0][4];
+
+          selectPolygon(polygonId);
+        });
+
+        polygonsLocal.push(polygonLocal);
       });
     }
 
@@ -116,6 +168,10 @@ export const MapPolygons = (props: {
 
 export const MapPolylines = (props: {
   polylines: T_mapData["polylines"];
+  handleClick: (
+    type: "marker" | "polyline" | "polygon",
+    target: string
+  ) => void;
 }): ReactElement | null => {
   const map = useMap();
   const [polylines, setPolylines] = useState<google.maps.Polyline[]>();

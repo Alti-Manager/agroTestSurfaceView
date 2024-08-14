@@ -46,13 +46,16 @@ export interface T_Position {
   enginespeed?: string;
 }
 
-export type T_geoJSON = [number, number, string?, number?];
+export type T_geoJSON = [number, number, string?, number?, string?];
 export interface T_work {
   _id?: string;
   start: Date;
   end: Date;
   coordinates: T_geoJSON[][];
   machinaryId?: string;
+  totalConsumption?: number;
+  workingArea?: number;
+  workingWidth?: number;
 }
 
 export type T_tourn = {
