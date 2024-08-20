@@ -80,10 +80,10 @@ export const Input = (props: {
               minWidth: 260,
             }}
           >
-            <InputLabel id="deviceSelection">{"Device"}</InputLabel>
+            <InputLabel id={props.input.value}>{props.input.label}</InputLabel>
             <Select
               labelId="deviceSelection"
-              id="deviceSelectionSelect"
+              id={props.input.value}
               value={props.value ? props.value : ""}
               label="Dispozitiv"
               onChange={(event): void => {

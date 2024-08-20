@@ -50,6 +50,7 @@ export const Base = (): ReactElement | null => {
       type: "select",
       value: "machineryId",
       label: "Dispozitiv",
+      sx: { padding: "1px" },
       options: machinaries?.map((machinery: T_machinery) => {
         return {
           label: machinery.name
@@ -63,9 +64,11 @@ export const Base = (): ReactElement | null => {
       type: "dateTime",
       value: "start",
       label: "Start",
+      sx: { padding: "1px" },
     },
     {
       type: "dateTime",
+      sx: { padding: "1px" },
       value: "end",
       label: "End",
     },
