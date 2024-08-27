@@ -26,8 +26,8 @@ export const Base = (): ReactElement | null => {
   const [localWorks, setLocalWorks] = useState<T_work[]>();
   const [form, setForm] = useState({
     machineryId: "",
-    start: moment("2024-07-29").startOf("day"),
-    end: moment("2024-07-29").endOf("day"),
+    start: moment("2024-08-14").startOf("day"),
+    end: moment("2024-08-14").endOf("day"),
   });
 
   useEffect(() => {
@@ -205,10 +205,25 @@ export const Base = (): ReactElement | null => {
         const selectedWork = localWorks.filter(
           (local) => local._id === target
         )[0];
-        alert(` Interval ${selectedWork.start} - ${selectedWork.end} 
-          suprafata: ${selectedWork.workingArea.toFixed(
-            2
-          )} ha, consum: ${selectedWork.totalConsumption.toFixed(2)} l`);
+        console.log(selectedWork);
+        try {
+          alert(
+            ` Interval ${moment(selectedWork.start)
+              .local()
+              .format("DD-MM-YYYY HH:mm")} - ${moment(selectedWork.end)
+              .local()
+              .format(
+                "DD-MM-YYYY HH:mm"
+              )}\nsup: ${selectedWork.workingArea.toFixed(
+              2
+            )} ha, cons: ${selectedWork.totalConsumption.toFixed(
+              2
+            )} l, width: ${selectedWork.workingWidth.toFixed(2)} m`
+          );
+        } catch (error) {
+          console.error(error);
+        }
+
         break;
 
       default:
