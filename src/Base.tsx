@@ -120,7 +120,7 @@ export const Base = (): ReactElement | null => {
         setMapData({
           markers,
           polylines: [...polylines, ...extraPoly],
-          polygons: worksPolygons,
+          polygons: false ? [] : worksPolygons,
         });
       }
     );

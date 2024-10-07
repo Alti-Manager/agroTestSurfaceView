@@ -18,7 +18,7 @@ export const BaseMap = (props: {
 }): ReactElement | null => {
   return (
     <APIProvider
-      apiKey="AIzaSyCbmoTCniO_4-qigA7MBbEYI2D2o1OG400"
+      apiKey="AIzaSyCvvF3lmmyGlWP-W_nVABH17n7bBlFj4is"
       libraries={["core", "maps", "marker"]}
     >
       <BaseMapComp data={{ ...props.data }} handleClick={props.handleClick} />
