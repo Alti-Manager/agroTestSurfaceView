@@ -58,6 +58,20 @@ export interface T_work {
   workingWidth?: number;
 }
 
+export interface T_surface {
+  _id?: string;
+  name: string;
+  coordinates: T_geoJSON[][];
+  cmt?: string;
+  desc?: string;
+  src?: string;
+  start: Date;
+  end?: Date;
+  sourceSurface?: string;
+  sourceType: "import" | "modified" | "manual";
+  farmId: string;
+}
+
 export type T_tourn = {
   firstSegment: T_geoJSON[];
   lastSegment: T_geoJSON[];
@@ -119,6 +133,33 @@ export const getMachinerys = async (
     .catch(async (e) => {
       console.error(await e, " >>>> on getMachinerys fn ");
       cb([]);
+    });
+};
+
+export const getSurfaces = async (
+  farmId: string
+): Promise<T_surface[] | null> => {
+  const token = localStorage.getItem("token"); // Preia tokenul utilizatorului
+  return axios({
+    method: "get",
+    url: `${process.env.server}/api2/surfaces/getSurfaces`,
+    params: { farmId },
+    headers: {
+      Authorization: `JWT ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return null;
+      }
+    })
+    .catch(async (e) => {
+      console.error(await e, " >>>> on getWorks");
+
+      return null;
     });
 };
 

@@ -7,7 +7,7 @@ import {
   useMap,
 } from "@vis.gl/react-google-maps";
 import React from "react";
-import { randomColor, T_geoJSON } from "../Utilsj";
+import { randomColor, T_geoJSON, T_surface } from "../Utilsj";
 
 export const BaseMap = (props: {
   data: T_mapData;
@@ -41,6 +41,7 @@ export const BaseMapComp = (props: {
       defaultZoom={10}
       mapTypeId="hybrid"
     >
+      <MapSurfaces surfaces={props.data.surfaces} key={"SurfacesComp"} />
       <MapPolylines
         polylines={props.data.polylines}
         handleClick={props.handleClick}
@@ -90,6 +91,33 @@ export const MapMarkers = (props: {
 interface CustomPolygon extends google.maps.Polygon {
   id?: string;
 }
+
+export const MapSurfaces = (props: {
+  surfaces: T_surface[];
+}): ReactElement | null => {
+  const map = useMap();
+  useEffect(() => {
+    if (props.surfaces) {
+      //
+      props.surfaces.forEach((localSurface) => {
+        let localPolygon = new google.maps.Polygon({
+          paths: localSurface.coordinates.map((localCoordinates) => {
+            return localCoordinates.map((point) => {
+              return { lng: point[0], lat: point[1] };
+            });
+          }),
+          map,
+          fillColor: "white",
+          strokeWeight: 0,
+          zIndex: 2040,
+          fillOpacity: 0.2,
+        });
+      });
+    }
+  }, [props.surfaces]);
+
+  return null;
+};
 
 export const MapPolygons = (props: {
   polygons: T_mapData["polygons"];

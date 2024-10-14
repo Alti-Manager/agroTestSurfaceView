@@ -4,10 +4,12 @@ import React, { ReactElement, useEffect, useState } from "react";
 import {
   T_geoJSON,
   T_machinery,
+  T_surface,
   T_work,
   authUser,
   getMachineryPath,
   getMachinerys,
+  getSurfaces,
   getWorks,
 } from "./Utilsj";
 import { Inputs, T_input } from "./Components/Inputs";
@@ -18,10 +20,12 @@ export interface T_mapData {
   markers: any[];
   polylines: T_geoJSON[][];
   polygons: any[];
+  surfaces?: T_surface[];
 }
 
 export const Base = (): ReactElement | null => {
   const [machinaries, setMachineries] = useState<T_machinery[]>();
+  const [surfaces, setSurfaces] = useState<T_surface[]>();
   const [mapData, setMapData] = useState<T_mapData>();
   const [localWorks, setLocalWorks] = useState<T_work[]>();
   const [form, setForm] = useState({
@@ -37,10 +41,16 @@ export const Base = (): ReactElement | null => {
         password: `${process.env.password}`,
         username: `${process.env.username}`,
       },
-      (done) => {
+      async (done) => {
         getMachinerys(null, (machinaries) => {
           setMachineries(machinaries);
         });
+
+        /// get all surfaces
+        const localSurfaces = await getSurfaces("6555f42e32ff84892674a092");
+        if (localSurfaces) {
+          setSurfaces(localSurfaces);
+        }
       }
     );
   }, []);
@@ -205,7 +215,6 @@ export const Base = (): ReactElement | null => {
         const selectedWork = localWorks.filter(
           (local) => local._id === target
         )[0];
-        console.log(selectedWork);
         try {
           alert(
             ` Interval ${moment(selectedWork.start)
@@ -281,6 +290,7 @@ export const Base = (): ReactElement | null => {
               markers: mapData?.markers,
               polygons: mapData?.polygons,
               polylines: mapData?.polylines,
+              surfaces,
             }}
             key={"mainMapComp"}
           />
