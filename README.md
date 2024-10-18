@@ -1,6 +1,6 @@
-Documentație tehnică pentru agroTestSurfaceView
+<p align='center'><b>Documentație tehnică pentru agroTestSurfaceView</b> </p>
 
-1. Introducere
+1. <b>Introducere</b>
 
 - 1.1 Scopul documentație
   Această documentație are ca scop detalierii contrucției și modului de funcționare a uneltei agroTestSurfacesView. Documentul este destinat dezvoltatorilor care doresc să folosească această aplicație împreună cu serviciul agroBackEnd
@@ -18,13 +18,13 @@ Documentație tehnică pentru agroTestSurfaceView
   - 2.1.3 - Interacțiunea cu poligoanele afișate prin click - un poligon reprezintă o suprafață lucrată determinată care conține mai multe informații despre intervalul lucrării, suprafața lucrată (ha), consumul de carburant(l) și lățimea de lucru(m) ce sunt afișate într-o fereastră de alertă la selectarea prin click a unui poligon
     ![infoLucrare](readmeImages/image2.png)
 
-3. Beneficii
+3. <b>Beneficii</b>
 
    3.1 - Vizualizarea rapidă pe o hartă traseului, a poligoanelor lucrărilor determinate și a elementelor ajutătoare (segmente, puncte, etc. );
    3.1 - Selecție rapidă pe un interval și un dispozitiv pentru a evalua capacitate de determinare a aloritmului.
    3.1 - Afișarea parcelelor APIA pe harta Google Maps pentru o mai bună contextualizare a celorlalte date
 
-4. Instalare
+4. <b>Instalare</b>
 
 - 4.1 Cerințe de sistem
 
