@@ -1,122 +1,156 @@
-<p align="center"><h3>Documentație Tehnică pentru agroTestSurfaceView</h3></p>
+# <p align="center">**Documentație Tehnică pentru agroTestSurfaceView**</p>
 
 ---
 
 ## **1. Introducere**
 
-### **1.1 Scopul Documentației**
+### **1.1 Scopul documentației**
 
-Această documentație are ca scop detalierea construcției și a modului de funcționare a uneltei **agroTestSurfaceView**. Documentul este destinat dezvoltatorilor care doresc să utilizeze această aplicație împreună cu serviciul **agroBackEnd**.
+Această documentație detaliază construcția și modul de funcționare al uneltei **agroTestSurfaceView**. Este destinată dezvoltatorilor care doresc să utilizeze această aplicație împreună cu serviciul **agroBackEnd**.
 
-### **1.2 Prezentarea Uneltei**
+### **1.2 Prezentarea uneltei**
 
-**agroTestSurfaceView** afișează pe o hartă Google Maps datele provenite de la back-end în urma solicitărilor de tip `getPath`. Aceste date pot fi:
+**agroTestSurfaceView** este o aplicație care afișează pe o hartă Google Maps datele primite de la serviciul back-end în urma solicitărilor de tip `getPath`. Aceste date includ:
 
-- **Linii**: trasee sau segmente.
+- **Linii**: trasee sau segmente de deplasare.
 - **Poligoane**: lucrări agricole determinate.
-- **Puncte**: diverse puncte necesare procesului de îmbunătățire.
+- **Puncte**: diverse puncte necesare pentru ajustarea algoritmilor.
 
-Autentificarea în cont se realizează automat, pe baza datelor salvate în fișierul `.env`. În funcție de contul conectat, lista de dispozitive afișată este personalizată.
+Autentificarea se realizează automat pe baza datelor salvate în fișierul `.env`. Lista de dispozitive afișată este personalizată în funcție de contul conectat.
 
 ---
 
-## **2. Descriere Generală**
+## **2. Descriere generală**
 
-### **2.1 Funcționalități Cheie**
+### **2.1 Funcționalități cheie**
 
-#### **2.1.1 Preluarea Datelor despre Traseu pe Intervale de Timp**
+- **Preluarea datelor pe intervale de timp**:
 
-- Selectarea dispozitivului, a datei și orei de început, precum și a datei și orei de sfârșit pentru afișarea datelor relevante.
-- Funcționalitate de navigare rapidă pentru a muta intervalul de selecție cu o zi înainte sau înapoi.
+  - **Selectarea dispozitivului și a intervalului de timp**: Permite alegerea dispozitivului, a datei și orei de început, precum și a datei și orei de sfârșit pentru afișarea datelor relevante.
+  - **Navigare rapidă**: Funcție care permite mutarea intervalului de selecție cu o zi înainte sau înapoi pentru o analiză rapidă.
 
-#### **2.1.2 Afișarea Datelor pe Hartă**
+- **Afișarea datelor pe hartă**:
 
-- Vizualizarea pe hartă a poligoanelor, liniilor și punctelor în funcție de intervalul și dispozitivul selectat.
+  - **Vizualizare interactivă**: Afișează poligoane, linii și puncte pe harta Google Maps în funcție de selecțiile realizate.
 
-#### **2.1.3 Interacțiunea cu Poligoanele**
+- **Interacțiunea cu poligoanele**:
 
-- Făcând clic pe un poligon, se afișează o fereastră cu informații detaliate despre:
+  - **Detalii lucrare**: Prin clic pe un poligon, se afișează o fereastră cu informații detaliate, inclusiv:
+    - Intervalul de timp al lucrării.
+    - Suprafața lucrată (în hectare).
+    - Consum de carburant (în litri).
+    - Lățimea de lucru (în metri).
 
-  - Intervalul de timp al lucrării.
-  - Suprafața lucrată (hectare).
-  - Consum de carburant (litri).
-  - Lățimea de lucru (metri).
-
-![infoLucrare](readmeImages/image2.png)
+![Informații Lucrare](readmeImages/image2.png)
 
 ---
 
 ## **3. Beneficii**
 
-### **3.1 Vizualizare Rapidă și Eficientă**
+### **3.1 Vizualizare rapidă și eficientă**
 
-- **Trasee și Lucrări**: Vizualizarea imediată a traseelor parcurse și a poligoanelor lucrărilor determinate.
-- **Elemente Ajutătoare**: Afișarea segmentelor și a punctelor suplimentare pentru o analiză detaliată.
-- **Contextualizare**: Integrarea parcelelor APIA pe harta Google Maps pentru o mai bună înțelegere a datelor.
+- **Trasee și lucrări**: Permite vizualizarea imediată a traseelor parcurse și a poligoanelor lucrărilor determinate, facilitând analiza și monitorizarea activităților agricole.
+
+  ![Trasee și Lucrări](readmeImages/image3.png)
+
+- **Elemente ajutătoare**: Afișează segmente și puncte suplimentare pentru o analiză detaliată și pentru îmbunătățirea algoritmilor de determinare.
+
+  ![Segment Ajutător](readmeImages/image4.png)
+
+- **Contextualizare**: Integrează parcelele APIA pe harta Google Maps pentru o înțelegere mai bună a datelor în contextul real.
+
+### **3.2 Transmiterea rapidă de elemente vizuale din back-end**
+
+- **Variabile globale**: În **agroBackEnd** există două variabile globale, `mapShowPoints` și `mapShowSegments`. Orice punct sau segment adăugat în aceste variabile va fi afișat pe hartă.
+- **Flexibilitate**: Aceste variabile pot fi accesate și modificate din orice componentă a back-end-ului, permițând o afișare rapidă a acestor elemente în Google Maps.
 
 ---
 
 ## **4. Instalare**
 
-### **4.1 Cerințe de Sistem**
+### **4.1 Cerințe de sistem**
 
-#### **4.1.1 Specificații Hardware**
+- **Specificații hardware**:
 
-- **Sistem de Operare**: Linux / Windows / macOS.
-- **Memorie RAM**: Minim 1 GB.
-- **Spațiu de Stocare**: Minim 10 MB disponibil.
+  - **Sistem de operare**: Linux, Windows sau macOS.
+  - **Memorie RAM**: Minim 1 GB.
+  - **Spațiu pe disc**: Minim 10 MB liber.
 
-#### **4.1.2 Dependențe Necesare**
+- **Dependențe necesare**:
 
-- **Node.js** și **npm**: Pentru gestionarea pachetelor și rularea aplicației.
-- **Git**: Pentru clonarea repository-ului.
+  - **Node.js** și **npm**: Pentru gestionarea pachetelor și rularea aplicației.
+  - **Git**: Pentru clonarea repository-ului.
 
-### **4.2 Descărcare și Instalare**
+### **4.2 Descărcare și instalare**
 
-#### **4.2.1 Clonarea Repository-ului**
+- **Clonarea repository-ului**:
 
-Pentru a descărca aplicația local, utilizați următoarea comandă în terminal:
+  Clonați repository-ul folosind comanda:
 
-```bash
-git clone [adresa_repo]
-```
+  ```bash
+  git clone [adresa_repo]
+  ```
 
-#### **4.2.2 Instalarea Dependențelor**
+  Înlocuiți `[adresa_repo]` cu URL-ul repository-ului.
 
-Accesați directorul proiectului și instalați dependențele cu:
+- **Instalarea dependențelor**:
 
-```bash
-npm ci
-```
+  Navigați în directorul proiectului și instalați dependențele cu:
 
-#### **4.2.3 Configurarea Variabilelor de Mediu**
+  ```bash
+  npm ci
+  ```
 
-Creați un fișier `.env` în rădăcina proiectului și adăugați următoarele variabile:
+- **Configurarea variabilelor de mediu**:
 
-```env
-username=[utilizator]
-password=[parola]
-server=[adresaServerului]
-```
+  Creați un fișier `.env` în directorul rădăcină al proiectului și adăugați următoarele variabile:
 
-Înlocuiți `[utilizator]`, `[parola]` și `[adresaServerului]` cu informațiile corespunzătoare.
+  ```env
+  username=[utilizator]
+  password=[parola]
+  server=[adresaServerului]
+  ```
 
-#### **4.2.4 Rularea Aplicației**
+  Înlocuiți `[utilizator]`, `[parola]` și `[adresaServerului]` cu informațiile corespunzătoare contului și serverului dvs.
 
-Pentru a porni aplicația, executați comanda:
+- **Rularea aplicației**:
 
-```bash
-npm run start
-```
+  Porniți aplicația folosind comanda:
 
-_(Notă: Asigurați-vă că scriptul de rulare este definit ca `"start"` în fișierul `package.json`. Dacă este diferit, înlocuiți `start` cu numele corespunzător.)_
+  ```bash
+  npm run start
+  ```
 
 ---
 
 ## **5. Utilizare**
 
-După rularea aplicației, aceasta va fi accesibilă prin intermediul browserului web la adresa specificată în configurare (implicit `http://localhost:3000`). Puteți începe să selectați dispozitivul și intervalul de timp pentru a vizualiza datele pe hartă.
+După ce aplicația este rulată, accesați-o în browser la adresa specificată (implicit `http://localhost:3400`). În interfață, puteți:
+
+- **Selecta dispozitivul**: Alegeți din lista personalizată de dispozitive asociate contului dvs.
+- **Seta intervalul de timp**: Selectați data și ora de început și de sfârșit pentru a afișa datele dorite.
+- **Vizualiza datele**: Datele relevante vor fi afișate pe hartă, permițând interacțiunea și analiza acestora.
 
 ---
 
-Dacă aveți nevoie de informații suplimentare sau întâmpinați probleme în timpul instalării, vă rugăm să consultați secțiunea de asistență sau să contactați echipa de dezvoltare.
+## **6. Exemple de utilizare**
+
+### **6.1 Afișarea unei lucrări cu suprafață mare**
+
+Acest exemplu prezintă o lucrare agricolă pe o distanță lungă și cu o suprafață mare lucrată.
+
+![Lucrare Suprafață Mare](readmeImages/image5.png)
+
+### **6.2 Afișarea mai multor suprafețe lucrate fără ghidaj**
+
+Ilustrează situația în care se lucrează fără un ghidaj clar, rezultând mai multe suprafețe lucrate cu capete neuniforme.
+
+![Suprafețe Lucrate Multiple](readmeImages/image6.png)
+
+### **6.3 Afișarea unei suprafețe cu iregularități pe margini**
+
+Prezintă o suprafață lucrată care prezintă iregularități semnificative pe margini, evidențiind necesitatea ajustării algoritmilor.
+
+![Suprafață cu Iregularități](readmeImages/image7.png)
+
+---
