@@ -25,6 +25,7 @@ export interface T_mapData {
 
 export const Base = (): ReactElement | null => {
   const [machinaries, setMachineries] = useState<T_machinery[]>();
+  const [alertText, setAlertText] = useState<string>();
   const [surfaces, setSurfaces] = useState<T_surface[]>();
   const [mapData, setMapData] = useState<T_mapData>();
   const [localWorks, setLocalWorks] = useState<T_work[]>();
@@ -85,6 +86,11 @@ export const Base = (): ReactElement | null => {
   ];
 
   const getWorksLocal = (polylines: T_mapData["polylines"]) => {
+    setAlertText(
+      `Aducem muncile din intervalul ${form.start.format(
+        "DD-MM HH:mm"
+      )} - ${form.end.format("DD-MM HH:mm")}`
+    );
     //get works for this machinary
     getWorks(
       {
@@ -95,6 +101,7 @@ export const Base = (): ReactElement | null => {
         end: form.end,
       },
       (data) => {
+        setAlertText(null);
         // set works
         setLocalWorks(data.works);
 
@@ -188,16 +195,53 @@ export const Base = (): ReactElement | null => {
             // get works now
             getWorksLocal(polylines);
           } else {
-            window.alert("Nu avem date");
+            setAlertText("Nu avem date");
+            setTimeout(() => {
+              setAlertText(null);
+            }, 2000);
           }
         }
       );
     } else {
-      window.alert("Selectează un device");
+      setAlertText("Selectează un device");
+      setTimeout(() => {
+        setAlertText(null);
+      }, 2000);
     }
   };
 
+  const otherDay = (target: "+1" | "-1") => {
+    // change one day and
+    let localForm = { ...form };
+    switch (target) {
+      case "-1":
+        localForm.start = localForm.start.clone().subtract(1, "days");
+        localForm.end = localForm.end.clone().subtract(1, "days");
+        break;
+      case "+1":
+        localForm.start = localForm.start.clone().add(1, "days");
+        localForm.end = localForm.end.clone().add(1, "days");
+        break;
+      default:
+        break;
+    }
+
+    setForm(localForm);
+  };
+
   const buttons: T_button[] = [
+    {
+      action: () => otherDay("-1"),
+      label: "-1",
+      value: "-1",
+      variant: "outlined",
+    },
+    {
+      action: () => otherDay("+1"),
+      label: "+1",
+      value: "+1",
+      variant: "outlined",
+    },
     {
       action: getPath,
       label: "Afișează date",
@@ -245,8 +289,22 @@ export const Base = (): ReactElement | null => {
     Object.assign(f, { [target.value]: value });
     setForm(f);
   };
+
   return (
     <Box>
+      {Boolean(alertText) ? (
+        <Box
+          sx={{
+            position: "fixed", // Position the box relative to the viewport
+            top: "20px", // Adjust the top position as needed
+            left: "20px", // Center the box horizontally
+            zIndex: 1300, // Set a high z-index to ensure it appears above other elements
+            width: "fit-content", // Adjust the width to fit the content
+          }}
+        >
+          <Alert severity="info">{alertText}</Alert>
+        </Box>
+      ) : null}
       <Grid container>
         <Grid
           item

@@ -170,7 +170,7 @@ export const MapPolygons = (props: {
           fillColor: randomColor(),
           strokeWeight: 0,
           strokeColor: "white",
-          fillOpacity: 0.7,
+          fillOpacity: 0.4,
           zIndex: 2050,
         });
 
