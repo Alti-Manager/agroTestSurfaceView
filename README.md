@@ -1,10 +1,13 @@
 Documentație tehnică pentru agroTestSurfaceView
 
 1. Introducere
+
    1.1 Scopul documentație
    Această documentație are ca scop detalierii contrucției și modului de funcționare a uneltei agroTestSurfacesView. Documentul este destinat dezvoltatorilor care doresc să folosească această aplicație împreună cu serviciul agroBackEnd
+
    1.2 Prezentarea uneltei
    Unealta afișează pe o hartă Google maps datele care parvin din backEnd în urma solicitării de tip getPath. Aceste date pot fi linii (traseu sau segmente), poligoane (lucrări) sau puncte (diverse puncte necesare procesului de îmbunătățire). Logarea într-un cont se face automat în funcție de datele care sunt salvate în .env. În funcție de contul logat lista de dispozitive este personalizată.
+
 2. Descriere generală
 
    2.1 Funcționalități cheie
@@ -20,10 +23,15 @@ Documentație tehnică pentru agroTestSurfaceView
    3.1 - Afișarea parcelelor APIA pe harta Google Maps pentru o mai bună contextualizare a celorlalte date
 
 4. Instalare
-   ** 4.1 Cerințe de sistem**
+
+   4.1 Cerințe de sistem
+
    4.1.1 - Specificații hardware - OS Linux / Windows / Macos, minim 1Gb de RAM și 10 Mb spațiu de stocare
+
    4.1.2 - Dependințe neceare - NodeJs + NPM + Git
-   ** 4.2 Descărcare și rulare**
+
+   4.2 Descărcare și rulare
+
    - Se clonează repo-ul local
    - Se instalează prin npm ci toate dependințelete
    - Se adaugă următoarele variabile în fișierul .env din rădăcina proiectului
