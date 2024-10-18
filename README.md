@@ -8,7 +8,7 @@ Documentație tehnică pentru agroTestSurfaceView
 - 1.2 Prezentarea uneltei
   Unealta afișează pe o hartă Google maps datele care parvin din backEnd în urma solicitării de tip getPath. Aceste date pot fi linii (traseu sau segmente), poligoane (lucrări) sau puncte (diverse puncte necesare procesului de îmbunătățire). Logarea într-un cont se face automat în funcție de datele care sunt salvate în .env. În funcție de contul logat lista de dispozitive este personalizată.
 
-2. Descriere generală
+2. <b>Descriere generală</b>
 
 - 2.1 Funcționalități cheie
 
