@@ -167,15 +167,14 @@ export const MapPolygons = (props: {
             });
           }),
           map,
-          fillColor: randomColor(),
+          fillColor: randomColor("blue"),
           strokeWeight: 0,
           strokeColor: "white",
-          fillOpacity: 0.4,
+          fillOpacity: 0.5,
           zIndex: 2050,
         });
 
         polygonLocal.id = polygonPath[0][0][4];
-
         polygonLocal.addListener("click", () => {
           let polygonId = polygonPath[0][0][4];
 

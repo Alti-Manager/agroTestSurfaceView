@@ -31,8 +31,8 @@ export const Base = (): ReactElement | null => {
   const [localWorks, setLocalWorks] = useState<T_work[]>();
   const [form, setForm] = useState({
     machineryId: "",
-    start: moment("2024-08-14").startOf("day"),
-    end: moment("2024-08-14").endOf("day"),
+    start: moment("2024-10-09").startOf("day"),
+    end: moment("2024-10-09").endOf("day"),
   });
 
   useEffect(() => {
@@ -265,13 +265,13 @@ export const Base = (): ReactElement | null => {
               .local()
               .format("DD-MM-YYYY HH:mm")} - ${moment(selectedWork.end)
               .local()
-              .format(
-                "DD-MM-YYYY HH:mm"
-              )}\nsup: ${selectedWork.workingArea.toFixed(
+              .format("DD-MM-YYYY HH:mm")}\n${selectedWork.workingArea.toFixed(
               2
-            )} ha, cons: ${selectedWork.totalConsumption.toFixed(
+            )} ha, ${selectedWork.totalConsumption.toFixed(
               2
-            )} l, width: ${selectedWork.workingWidth.toFixed(2)} m`
+            )} l, ${selectedWork.workingWidth.toFixed(
+              2
+            )} m, ${selectedWork.totalTime.toFixed(0)} minutes`
           );
         } catch (error) {
           console.error(error);

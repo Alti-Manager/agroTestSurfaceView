@@ -54,6 +54,7 @@ export interface T_work {
   coordinates: T_geoJSON[][];
   machinaryId?: string;
   totalConsumption?: number;
+  totalTime?: number;
   workingArea?: number;
   workingWidth?: number;
 }
@@ -181,7 +182,7 @@ export const getWorks = (
 
   axios({
     method: "get",
-    url: `${process.env.server}/api2/machinery/works`,
+    url: `${process.env.server}/api2/machinery/devCalculateWorks`,
     params: { deviceId: data.deviceId, start: data.start, end: data.end },
     headers: {
       Authorization: `JWT ${token}`,
@@ -236,10 +237,42 @@ export const getMachineryPath = (
 };
 
 // generate random color
-export const randomColor = () => {
-  var num = Math.round(0xffffff * Math.random());
-  var r = num >> 16;
-  var g = (num >> 8) & 255;
-  var b = num & 255;
-  return "rgb(" + r + ", " + g + ", " + b + ")";
+export const randomColor = (color = "any") => {
+  let r, g, b;
+
+  switch (color.toLowerCase()) {
+    case "red":
+      // Red is high, green and blue are low
+      r = Math.floor(Math.random() * 56) + 200;
+      g = Math.floor(Math.random() * 50);
+      b = Math.floor(Math.random() * 50);
+      break;
+    case "yellow":
+      // Red and green are high, blue is low
+      r = Math.floor(Math.random() * 56) + 200;
+      g = Math.floor(Math.random() * 56) + 200;
+      b = Math.floor(Math.random() * 50);
+      break;
+    case "green":
+      // Green is high, red and blue are low
+      r = Math.floor(Math.random() * 50);
+      g = Math.floor(Math.random() * 56) + 200;
+      b = Math.floor(Math.random() * 50);
+      break;
+    case "blue":
+      // Blue is high, red and green are low
+      r = Math.floor(Math.random() * 50);
+      g = Math.floor(Math.random() * 50);
+      b = Math.floor(Math.random() * 56) + 200;
+      break;
+    case "any":
+    default:
+      // Generate random RGB for any color
+      r = Math.floor(Math.random() * 256);
+      g = Math.floor(Math.random() * 256);
+      b = Math.floor(Math.random() * 256);
+      break;
+  }
+
+  return `rgb(${r}, ${g}, ${b})`;
 };
