@@ -1,6 +1,6 @@
 // /
 
-import axios from "axios";
+import axios, { Axios, AxiosError } from "axios";
 import moment, { Moment } from "moment";
 
 export interface T_userCredentials {
@@ -157,8 +157,8 @@ export const getSurfaces = async (
         return null;
       }
     })
-    .catch(async (e) => {
-      console.error(await e, " >>>> on getWorks");
+    .catch((e: AxiosError): void => {
+      console.error(e, " >>>> on getWorks");
 
       return null;
     });
@@ -183,7 +183,11 @@ export const getWorks = (
   axios({
     method: "get",
     url: `${process.env.server}/api2/machinery/devCalculateWorks`,
-    params: { deviceId: data.deviceId, start: data.start, end: data.end },
+    params: {
+      deviceId: data.deviceId,
+      start: data.start.toISOString(),
+      end: data.end.toISOString(),
+    },
     headers: {
       Authorization: `JWT ${token}`,
       "Content-Type": "application/json",
@@ -196,8 +200,8 @@ export const getWorks = (
         cb(null);
       }
     })
-    .catch(async (e) => {
-      console.error(await e, " >>>> on getWorks");
+    .catch((e: AxiosError) => {
+      console.error(e.response, " >>>> on getWorks");
 
       cb(null);
     });
@@ -209,14 +213,18 @@ export const getMachineryPath = (
     start: Moment;
     end: Moment;
   },
-  cb: (positions: T_Path | null) => void
+  cb: (positions: T_Path | null, error?: string | null) => void
 ) => {
   const token = localStorage.getItem("token"); // Preia tokenul utilizatorului
 
   axios({
     method: "get",
     url: `${process.env.server}/api2/machinery/path`,
-    params: { deviceId: data.deviceId, start: data.start, end: data.end },
+    params: {
+      deviceId: data.deviceId,
+      start: data.start.toISOString(),
+      end: data.end.toISOString(),
+    },
     headers: {
       Authorization: `JWT ${token}`,
       "Content-Type": "application/json",
@@ -224,15 +232,14 @@ export const getMachineryPath = (
   })
     .then((response) => {
       if (response.status === 200) {
-        cb(response.data);
+        cb(response.data, null);
       } else {
-        cb(null);
+        cb(null, "Răspuns greșit");
       }
     })
-    .catch(async (e) => {
-      console.error(await e, " >>>> on getPath");
-
-      cb(null);
+    .catch((e: AxiosError): void => {
+      console.error(JSON.stringify(e, null, 2), " >>>> on getPath");
+      cb(null, "Răspuns greșit");
     });
 };
 

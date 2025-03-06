@@ -31,8 +31,8 @@ export const Base = (): ReactElement | null => {
   const [localWorks, setLocalWorks] = useState<T_work[]>();
   const [form, setForm] = useState({
     machineryId: "",
-    start: moment("2024-10-09").startOf("day"),
-    end: moment("2024-10-09").endOf("day"),
+    start: moment("2025-02-24").startOf("day"),
+    end: moment("2025-02-24").endOf("day"),
   });
 
   useEffect(() => {
@@ -144,8 +144,8 @@ export const Base = (): ReactElement | null => {
   };
 
   const getPath = () => {
+    setMapData(null);
     if (form.machineryId) {
-      setMapData(null);
       getMachineryPath(
         {
           deviceId: machinaries.filter(
@@ -154,8 +154,11 @@ export const Base = (): ReactElement | null => {
           start: form.start,
           end: form.end,
         },
-        (path) => {
+        (path, error) => {
           // save this path
+          if (error) {
+            return console.error(error);
+          }
 
           if (path && path.path.length) {
             let worksPolygons = path.works?.map((work) => {
@@ -174,7 +177,7 @@ export const Base = (): ReactElement | null => {
             }
 
             // check if we have segments to show
-            if (path.segments.length) {
+            if (path.segments?.length) {
               path.segments.forEach((segment) => {
                 segment.forEach((seg) => {
                   polylines.push(

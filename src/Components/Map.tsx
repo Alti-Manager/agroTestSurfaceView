@@ -8,6 +8,7 @@ import {
 } from "@vis.gl/react-google-maps";
 import React from "react";
 import { randomColor, T_geoJSON, T_surface } from "../Utilsj";
+import { Grid } from "@mui/material";
 
 export const BaseMap = (props: {
   data: T_mapData;
@@ -74,6 +75,9 @@ export const MapMarkers = (props: {
   return (
     <>
       {props.markers?.map((marker) => {
+        const timestamp = marker[2]; // Extract timestamp (epoch milliseconds)
+        const formattedTime = new Date(timestamp).toLocaleTimeString(); // Format time (HH:MM:SS)
+
         return (
           <AdvancedMarker
             key={`${marker[0]}_${marker[1]}`}
@@ -81,7 +85,15 @@ export const MapMarkers = (props: {
               lng: marker[0],
               lat: marker[1],
             }}
-          />
+          >
+            <Grid
+              style={{
+                backgroundColor: "white",
+              }}
+            >
+              {formattedTime}
+            </Grid>
+          </AdvancedMarker>
         );
       })}
     </>
@@ -167,7 +179,7 @@ export const MapPolygons = (props: {
             });
           }),
           map,
-          fillColor: randomColor("blue"),
+          fillColor: randomColor(),
           strokeWeight: 0,
           strokeColor: "white",
           fillOpacity: 0.5,
