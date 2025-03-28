@@ -235,7 +235,8 @@ export const MapPolylines = (props: {
         map,
         strokeColor: index === 0 ? "#FF0000" : randomColor(),
         strokeOpacity: 1,
-        zIndex: index === 0 ? 2030 : 2040,
+        strokeWeight: index === 0 ? 0.7 : 1.7,
+        zIndex: index === 0 ? 2030 : 2060,
       });
 
       polylinesLocal.push(googlePolylines);
