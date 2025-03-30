@@ -31,8 +31,8 @@ export const Base = (): ReactElement | null => {
   const [localWorks, setLocalWorks] = useState<T_work[]>();
   const [form, setForm] = useState({
     machineryId: "",
-    start: moment("2025-02-24").startOf("day"),
-    end: moment("2025-02-24").endOf("day"),
+    start: moment("2025-02-25").startOf("day"),
+    end: moment("2025-02-25").endOf("day"),
   });
 
   useEffect(() => {
