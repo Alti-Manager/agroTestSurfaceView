@@ -7,8 +7,9 @@ import {
   useMap,
 } from "@vis.gl/react-google-maps";
 import React from "react";
-import { randomColor, T_geoJSON, T_surface } from "../Utilsj";
+import { randomColor, T_geoJSON, T_surface, T_work } from "../Utilsj";
 import { Grid } from "@mui/material";
+import moment from "moment";
 
 export const BaseMap = (props: {
   data: T_mapData;
@@ -50,6 +51,7 @@ export const BaseMapComp = (props: {
       />
       <MapPolygons
         polygons={props.data.polygons}
+        worksInfo={props.data.worksInfo}
         handleClick={props.handleClick}
         key="PolygonsComp"
       />
@@ -133,13 +135,15 @@ export const MapSurfaces = (props: {
 
 export const MapPolygons = (props: {
   polygons: T_mapData["polygons"];
+  worksInfo: T_work[];
   handleClick: (
     type: "marker" | "polyline" | "polygon",
     target: string
   ) => void;
 }): ReactElement | null => {
   const map = useMap();
-  const [polygons, setPolygons] = useState<CustomPolygon[]>();
+  const [polygons, setPolygons] = useState<CustomPolygon[]>([]);
+  const [textMarkers, setTextMarkers] = useState<google.maps.Marker[]>([]);
   const [selectedPolygonId, setSelectedPolygonId] = useState<string | null>(
     null
   );
@@ -149,57 +153,88 @@ export const MapPolygons = (props: {
     setSelectedPolygonId(id);
   };
 
+  // Actualizează stilul poligonului selectat
   useEffect(() => {
-    // monitor selected polygon change
-    polygons?.forEach((localPolygon) => {
-      if (localPolygon.id === selectedPolygonId) {
-        localPolygon.setOptions({
-          strokeWeight: 5,
-        });
-      } else {
-        localPolygon.setOptions({
-          strokeWeight: 0,
-        });
-      }
+    polygons.forEach((polygon) => {
+      polygon.setOptions({
+        strokeWeight: polygon.id === selectedPolygonId ? 5 : 0,
+      });
     });
   }, [selectedPolygonId]);
 
+  // Creează poligoane + label text marker
   useEffect(() => {
-    var polygonsLocal: CustomPolygon[] = [];
-    if (polygons && polygons.length) {
-      polygons.forEach((polygon) => polygon.setMap(null));
-      setPolygons(null);
-    }
-    if (props.polygons?.length) {
+    // Șterge poligoane vechi de pe hartă
+    polygons.forEach((polygon) => polygon.setMap(null));
+    setPolygons([]);
+
+    // Șterge marker-ele vechi
+    textMarkers.forEach((marker) => marker.setMap(null));
+    setTextMarkers([]);
+
+    const newPolygons: CustomPolygon[] = [];
+    const newTextMarkers: google.maps.Marker[] = [];
+
+    if (props.polygons?.length && map) {
       props.polygons.forEach((polygonPath: T_geoJSON[][]) => {
-        const polygonLocal: CustomPolygon = new google.maps.Polygon({
-          paths: polygonPath.map((localPolygon) => {
-            return localPolygon.map((position) => {
-              return { lng: position[0], lat: position[1] };
-            });
-          }),
+        const paths = polygonPath.map((ring) =>
+          ring.map((pos) => ({ lng: pos[0], lat: pos[1] }))
+        );
+
+        const polygon: CustomPolygon = new google.maps.Polygon({
+          paths,
           map,
           fillColor: randomColor(),
-          strokeWeight: 0,
-          strokeColor: "white",
           fillOpacity: 0.5,
+          strokeColor: "#ffffff",
+          strokeWeight: 0,
           zIndex: 2050,
         });
 
-        polygonLocal.id = polygonPath[0][0][4];
-        polygonLocal.addListener("click", () => {
-          let polygonId = polygonPath[0][0][4];
+        polygon.id = polygonPath[0][0][4]; // presupunem că ID-ul este în coordonata [4]
 
-          selectPolygon(polygonId);
+        polygon.addListener("click", () => selectPolygon(polygon.id));
+
+        newPolygons.push(polygon);
+
+        const targetWork = props.worksInfo?.find(
+          (localWork) => localWork._id === polygon.id
+        );
+
+        const labelText = `${moment(targetWork?.start).format(
+          "HH:mm"
+        )} - ${moment(targetWork?.end).format("HH:mm")},
+         ${targetWork.workingArea.toFixed(
+           2
+         )} ha, ${targetWork.workingWidth.toFixed(2)}m  `;
+
+        // Calculează centrul (bounding box center)
+        const bounds = new google.maps.LatLngBounds();
+        paths[0].forEach((point) => bounds.extend(point));
+        const center = bounds.getCenter();
+
+        const label = new google.maps.Marker({
+          position: center,
+          map,
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 0, // ascunde simbolul
+          },
+          label: {
+            text: labelText || "",
+            color: "#fff",
+            fontSize: "12px",
+            fontWeight: "bold",
+          },
+          zIndex: 2051,
         });
 
-        polygonsLocal.push(polygonLocal);
+        newTextMarkers.push(label);
       });
     }
 
-    if (polygonsLocal.length) {
-      setPolygons(polygonsLocal);
-    }
+    setPolygons(newPolygons);
+    setTextMarkers(newTextMarkers);
   }, [props.polygons]);
 
   return null;

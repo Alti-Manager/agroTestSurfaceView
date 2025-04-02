@@ -21,6 +21,7 @@ export interface T_mapData {
   polylines: T_geoJSON[][];
   polygons: any[];
   surfaces?: T_surface[];
+  worksInfo?: T_work[];
 }
 
 export const Base = (): ReactElement | null => {
@@ -125,6 +126,12 @@ export const Base = (): ReactElement | null => {
           return polygon;
         });
 
+        let worksInfo = data.works?.map((localWork) => {
+          let local = { ...localWork };
+          local.coordinates = [];
+          return local;
+        });
+
         let markers: T_mapData["markers"][] = data.points?.map((point) => {
           return point;
         });
@@ -138,6 +145,7 @@ export const Base = (): ReactElement | null => {
           markers,
           polylines: [...polylines, ...extraPoly],
           polygons: false ? [] : worksPolygons,
+          worksInfo,
         });
       }
     );
@@ -351,6 +359,7 @@ export const Base = (): ReactElement | null => {
               markers: mapData?.markers,
               polygons: mapData?.polygons,
               polylines: mapData?.polylines,
+              worksInfo: mapData?.worksInfo,
               surfaces,
             }}
             key={"mainMapComp"}
